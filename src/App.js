@@ -1,26 +1,72 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react'
+import { connect } from 'react-redux'
+import * as actions from './actions/actions'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+class App extends Component{
 
-export default App;
+    state={
+        name:"",
+    }
+
+    handleOnClick = event => {
+        event.preventDefault();
+        this.props.cityLocation(this.state.name)
+    }
+    
+    nameChangleHandler = event => {
+        this.setState({
+            name: event.target.value
+        })
+    }
+
+    render() {  
+     
+        return( 
+        <div>
+            <form onSubmit={this.handleOnClick}>
+                <label>Weather </label>
+                    <input placeholder="Weather" 
+                        value={this.state.name} 
+                        onChange={(event) => this.nameChangleHandler(event)}/>
+                    
+                    <input type='submit'/>
+                
+                <div>
+                <br />
+                <br />
+                    <div>
+                        <label>Location : </label>
+                        {this.props.location}
+                    </div>
+                <br />
+                    <div>
+                        <label>Temperature : </label>
+                        {/* {this.props.data} */}
+                    </div>
+                </div>
+            </form>
+        </div>
+        )
+    }
+    
+} 
+
+  
+
+
+const mapStateToProps = state => ({
+    loading: state.loading,
+    location: state.data.location,
+    temperatures: state.data.temperature,
+    hasErrors: state.hasErrors,
+  })
+  
+  const mapDispatchToProps = dispatch => {
+    return {
+      cityLocation: (text) => {
+        dispatch(actions.fetchPosts(text))
+      }
+    };
+  };
+
+  export default  connect(mapStateToProps, mapDispatchToProps)(App)
